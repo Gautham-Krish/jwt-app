@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Validation from "./Validation";
+// import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
-const SignupForm = ({ submitForm, navigation }) => {
+const SignupForm = ({ submitForm }) => {
+  // let navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
     password: "",
@@ -22,25 +24,24 @@ const SignupForm = ({ submitForm, navigation }) => {
     event.preventDefault();
     setErrors(Validation(values));
     setDataIsCorrect(true);
+
     axios
       .post("http://localhost:8080/register", {
         username: values.username,
         password: values.password,
+        role: "ROLE_ADMIN",
       })
       .then(function (response) {
         console.log(response);
-        navigation.navigate("Register");
+        if (response.status === 200) {
+          submitForm(true);
+        }
       })
       .catch(function (error) {
         console.log(error);
       });
   };
 
-  useEffect(() => {
-    if (Object.keys(errors).length === 0 && dataIsCorrect) {
-      submitForm(true);
-    }
-  }, [errors]);
   return (
     <div className="comt">
       <div className="app-wrapper">
